@@ -6,18 +6,34 @@ bpy.ops.file.make_paths_absolute()
 images = [img for img in bpy.data.images if not img.library and not img.override_library]
 print(f'Checking {len(images)} images.')
 
-root_fixing = {
-    '/projects/library/': ['L:/', 'F:/library/', '/studio/library/', '/f/library/', '/l/'],
-    '/projects/local/': ['W:/', 'F:/', '/w/projects/', 'F:/projects/'],
+roots = {
+    '/projects/library/': [
+        '/f/library/',
+        '/l/',
+        '/studio/library/',
+        'F:/library/',
+        'L:/',
+    ],
+    '/projects/local/': [
+        '/w/projects/',
+        'F:/',
+        'F:/projects/',
+        'W:/',
+    ],
 }
-other_changes = {'prop': ['animprop'], 'elt': ['decoration', 'element']}
+other_changes = {
+    'char': ['character'],
+    'elt': ['decoration', 'element'],
+    'prop': ['animprop'],
+    'seq': ['sequence'],
+}
 
 for img in images:
     print('----')
     print(f'Filepath is {img.filepath}')
     new_path = img.filepath
 
-    for right, wrong in root_fixing.items():
+    for right, wrong in roots.items():
         for bad in wrong:
             if new_path.startswith(bad):
                 new_path = new_path.replace(bad, right)
