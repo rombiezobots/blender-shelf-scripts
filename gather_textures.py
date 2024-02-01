@@ -32,6 +32,7 @@ map_acronyms = {
         'normal',
         'normals',
         'nrm',
+        'nrm16',
     ],
     'SPI': [
         'refl',
