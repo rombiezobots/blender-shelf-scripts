@@ -1,6 +1,8 @@
 import bpy
 
-selected_curves = [curve.data for curve in bpy.data.objects if curve.type == 'CURVE']
+selected_curves = [
+    ob.data for ob in bpy.data.objects if ob.type == 'CURVE' and not (ob.data.library or ob.data.override_library)
+]
 
 for curve in selected_curves:
     for spline in curve.splines:
