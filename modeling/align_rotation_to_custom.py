@@ -11,7 +11,7 @@ old = context.scene.tool_settings.use_transform_data_origin
 context.scene.tool_settings.use_transform_data_origin = True
 
 for ob in objects:
-    context.view_layer.active_object = ob
+    context.view_layer.objects.active = ob
     bpy.ops.transform.transform(mode='ALIGN')
 
 context.scene.tool_settings.use_transform_data_origin = old
