@@ -4,67 +4,6 @@ from pathlib import Path
 C = bpy.context
 D = bpy.data
 
-map_settings_outputs = {
-    # TODO: add AOVs, light groups
-    'cycles.denoising_store_passes': ['Denoising Normal', 'Denoising Albedo', 'Denoising Depth'],
-    'cycles.pass_debug_sample_count': ['Debug Sample Count'],
-    'cycles.use_pass_shadow_catcher': ['Shadow Catcher', 'Noisy Shadow Catcher'],
-    'cycles.use_pass_volume_direct': ['VolumeDir'],
-    'cycles.use_pass_volume_indirect': ['VolumeInd'],
-    'use_pass_ambient_occlusion': ['AO'],
-    'use_pass_combined': ['Image'],
-    'use_pass_diffuse_color': ['DiffCol'],
-    'use_pass_diffuse_direct': ['DiffDir'],
-    'use_pass_diffuse_indirect': ['DiffInd'],
-    'use_pass_emit': ['Emit'],
-    'use_pass_environment': ['Env'],
-    'use_pass_glossy_color': ['GlossCol'],
-    'use_pass_glossy_direct': ['GlossDir'],
-    'use_pass_glossy_indirect': ['GlossInd'],
-    'use_pass_material_index': ['IndexMA'],
-    'use_pass_mist': ['Mist'],
-    'use_pass_normal': ['Normal'],
-    'use_pass_object_index': ['IndexOB'],
-    'use_pass_position': ['Position'],
-    'use_pass_transmission_color': ['TransCol'],
-    'use_pass_transmission_direct': ['TransDir'],
-    'use_pass_transmission_indirect': ['TransInd'],
-    'use_pass_uv': ['UV'],
-    'use_pass_vector': ['Vector'],
-    'use_pass_z': ['Depth'],
-    'use_pass_cryptomatte_material': [
-        'CryptoMaterial00',
-        'CryptoMaterial01',
-        'CryptoMaterial02',
-        'CryptoMaterial03',
-        'CryptoMaterial04',
-        'CryptoMaterial05',
-        'CryptoMaterial06',
-        'CryptoMaterial07',
-    ],
-    'use_pass_cryptomatte_object': [
-        'CryptoObject00',
-        'CryptoObject01',
-        'CryptoObject02',
-        'CryptoObject03',
-        'CryptoObject04',
-        'CryptoObject05',
-        'CryptoObject06',
-        'CryptoObject07',
-    ],
-    'use_pass_cryptomatte_asset': [
-        'CryptoAsset00',
-        'CryptoAsset01',
-        'CryptoAsset02',
-        'CryptoAsset03',
-        'CryptoAsset04',
-        'CryptoAsset05',
-        'CryptoAsset06',
-        'CryptoAsset07',
-    ],
-}
-
-
 x = 500
 y = -350
 
@@ -98,9 +37,9 @@ for i, layer in enumerate(layers):
 
     # Include all passes enabled for this layer
     node_output.file_slots.clear()
-    render_passes = [p for check, p in map_settings_outputs.items() if getattr(layer, check, False)]
-    for pass_outputs in render_passes:
-        for pass_output in pass_outputs:
-            if node_layer.outputs.get(pass_output):
-                node_output.file_slots.new(pass_output)
-                C.scene.node_tree.links.new(node_output.inputs[pass_output], node_layer.outputs[pass_output])
+    outputs_available = [o.name for o in node_layer.outputs if o.enabled]
+    for output_name in outputs_available:
+        node_output.file_slots.new(output_name)
+        C.scene.node_tree.links.new(node_output.inputs[output_name], node_layer.outputs[output_name])
+        if 'Crypto' in output_name:
+            node_output.format.color_depth = '32'
