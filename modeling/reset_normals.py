@@ -9,5 +9,6 @@ else:
 for ob in objects:
     for edge in ob.data.edges:
         edge.use_edge_sharp = False
-    C.view_layer.objects.active = ob
-    bpy.ops.mesh.customdata_custom_splitnormals_clear()
+    if ob in C.view_layer.objects.values():
+        C.view_layer.objects.active = ob
+        bpy.ops.mesh.customdata_custom_splitnormals_clear()
