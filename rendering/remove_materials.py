@@ -1,7 +1,12 @@
 import bpy
 
-for ob in [o for o in bpy.context.selected_objects if o.type == 'MESH']:
-    ob.active_material_index = 0
-    for i in range(len(ob.material_slots)):
-        with bpy.context.temp_override(object=ob):
-            bpy.ops.object.material_slot_remove()
+C = bpy.context
+
+mesh_objects = [
+    ob
+    for ob in C.selected_objects
+    if ob.type in ['MESH', 'CURVE'] and not (ob.data.library or ob.data.override_library)
+]
+
+for ob in mesh_objects:
+    ob.data.materials.clear()
