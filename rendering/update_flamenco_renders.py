@@ -12,14 +12,17 @@ regex = re.compile(r'[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9]{6}')
 # Make all paths absolute.
 bpy.ops.file.make_paths_absolute()
 
-for img in bpy.data.images:
+images = [img for img in bpy.data.images if img.type in ['MULTILAYER', 'IMAGE']]
+for img in images:
+
+    print(f'Image {img.name}')
 
     # Skip Render Result and Viewer Node, as well as image datablocks with an empty filepath.
-    if not img.filepath or img.filepath == '':
+    if not img.filepath or img.filepath == '' or img.is_missing:
         continue
 
     # Get the latest date_time formatted folder in the image's grandparent folder.
-    parent_dir = Path(img.filepath).parent.parent
+    parent_dir = Path(img.filepath).parents[1]
     contents = sorted(parent_dir.iterdir(), reverse=True)
     latest_path = next((dir for dir in contents if dir.is_dir() and regex.match(dir.stem)), None)
     if not latest_path:
