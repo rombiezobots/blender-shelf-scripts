@@ -14,11 +14,10 @@ bpy.ops.file.make_paths_absolute()
 
 images = [img for img in bpy.data.images if img.type in ['MULTILAYER', 'IMAGE']]
 for img in images:
-
     print(f'Image {img.name}')
 
     # Skip Render Result and Viewer Node, as well as image datablocks with an empty filepath.
-    if not img.filepath or img.filepath == '' or img.is_missing:
+    if not img.filepath or img.filepath == '' or not Path(img.filepath).exists() or img.is_missing:
         continue
 
     # Get the latest date_time formatted folder in the image's grandparent folder.
